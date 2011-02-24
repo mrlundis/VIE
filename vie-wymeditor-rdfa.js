@@ -9,7 +9,7 @@
 				if (containerProperty.is('div')) {
 					containerProperty.wymeditor({
 						html: containerProperty.html(),
-						stylesheet: 'vie-wymeditor-stylesheet.css',
+						stylesheet: 'vie-wymeditor-rdfa-stylesheet.css',
 						postInit: function (wym) {
 							containerInstance.editables[propertyName] = wym;
 							wym.vieContainerInstance = containerInstance;
