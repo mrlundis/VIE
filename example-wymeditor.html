@@ -3,9 +3,11 @@
     <head>
         <title>VIE example</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script src="wymeditor/jquery.wymeditor.js"></script>
+        <script src="vie-containermanager.js"></script>
+        <script src="vie-wymeditor.js"></script>
         <script>
-            GENTICS_Aloha_base = 'http://aloha-editor.org/aloha-0.9.3/aloha/';
-
+            
             jQuery(document).ready(function() {
 
                 // Implement our own Backbone.sync method
@@ -15,7 +17,7 @@
 
                 // Make all RDFa entities editable
                 jQuery('[typeof][about]').each(function() {
-                    jQuery(this).vieSemanticAloha();
+                    jQuery(this).vieWymeditor();
                 });
 
                 jQuery('#savebutton').bind('click', function() {
@@ -47,13 +49,8 @@
                 });
             });
         </script>
-        <script src="http://aloha-editor.org/aloha-0.9.3/aloha/aloha.js"></script>
-        <script src="http://aloha-editor.org/aloha-0.9.3/aloha/plugins/com.gentics.aloha.plugins.Format/plugin.js"></script>
-        <script src="http://aloha-editor.org/aloha-0.9.3/aloha/plugins/com.gentics.aloha.plugins.HighlightEditables/plugin.js"></script>
         <script src="underscore-min.js"></script>
         <script src="backbone-min.js"></script>
-        <script src="vie-containermanager.js"></script>
-        <script src="vie-aloha.js"></script>
     </head>
     <body>
         <p>Click on the content below to edit it, then <button id="savebutton">Save</button>
