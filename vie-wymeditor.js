@@ -4,7 +4,7 @@
 			var elm = $(this);
 			if (elm.is('div')) {
 				elm.wymeditor({
-					
+					html: elm.html()
 				});
 			}
 		});
