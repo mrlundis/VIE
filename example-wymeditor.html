@@ -16,7 +16,7 @@
                 };
 
                 // Make all RDFa entities editable
-                jQuery('[typeof][about]').each(function() {
+                jQuery('[property="sioc:content"]').each(function() {
                     jQuery(this).vieWymeditor();
                 });
 
