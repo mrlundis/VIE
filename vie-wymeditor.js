@@ -90,6 +90,8 @@
                                             if(attrValue != null) jQuery(selected).attr(attrName, attrValue).addClass(attrName);
                                         }
                                     }
+                                    
+                                    return false;
                                 });
 
                             //feedback css
