@@ -1,12 +1,20 @@
-Vienna IKS Editables
+![VIE](https://github.com/bergie/VIE/raw/master/vie_logo_100.png) Vienna IKS Editables
 ====================
 
-VIE is a utility library for implementing [decoupled Content Management systems](http://bergie.iki.fi/blog/decoupling_content_management/).
+VIE is a utility library for implementing [decoupled Content Management systems](http://bergie.iki.fi/blog/decoupling_content_management/). VIE is developed [as part of](http://wiki.iks-project.eu/index.php/VIE) the EU-funded [IKS project](http://www.iks-project.eu/).
 
 ![Decoupled CMS communications](https://github.com/bergie/VIE/raw/master/cms-decoupled-communications.png)
 
 * In French, _vie_ means life, showcasing how VIE makes your website come alive
 * In English, _vie_ means striving for victory or superiority
+
+## VIE integration in nutshell
+
+Adding VIE to your system is as easy as:
+
+1. Mark up your pages with RDFa annotations
+2. Include `vie.js` into the pages
+3. Implement [Backbone.sync](http://documentcloud.github.com/backbone/#Sync)
 
 ## Common representation of content on HTML level
 
@@ -35,11 +43,11 @@ Having contents of a page described via RDFa makes it very easy to extract the c
 
 With Backbone, the content extracted from the RDFa-annotated HTML page is easily manageable via JavaScript. Consider for example:
 
-    var objectInstance = VIE.ContainerManager.getInstanceForContainer(jQuery('#myarticle'));
-    objectInstance.set({title: 'Hello, world'});
+    var objectInstance = VIE.RDFaEntities.getInstance(jQuery('#myarticle'));
+    objectInstance.set({'dcterms:title': 'Hello, world'});
     objectInstance.save(null, {
         success: function(savedModel, response) {
-            alert("Your article '" + savedModel.get('title') + "' was saved to server");
+            alert("Your article '" + savedModel.get('dcterms:title') + "' was saved to server");
         }
     });
 
@@ -52,6 +60,8 @@ There is a full static HTML example of VIE at work. Saving outputs the edited co
 * [Example with Aloha Editor](https://github.com/bergie/VIE/raw/master/example.html)
 * [Example with WYMeditor](https://github.com/bergie/VIE/blob/wymeditor/example-wymeditor.html)
 
+Be sure to read the [annotated VIE source code](http://bergie.github.com/VIE/) for API documentation.
+
 ## Implementations
 
 * [Midgard Create](https://github.com/bergie/midgardmvc_ui_create)
@@ -61,3 +71,37 @@ There is a full static HTML example of VIE at work. Saving outputs the edited co
 * Gentics Enterprise CMS
 * Drupal
 * Jekyll
+* Plone ([GSoC 2011 proposal](http://www.google-melange.com/gsoc/proposal/review/google/gsoc2011/dalsh/1))
+* [Symfony2](https://github.com/liip/LiipVieBundle)
+
+## Using VIE on Node.js
+
+VIE is a CommonJS library that works on both browser and the server. On [Node.js](http://nodejs.org/) you can install it with:
+
+    npm install vie
+
+Here is a simple Node.js script that uses VIE for parsing RDFa:
+
+    var jQuery = require('jquery');
+    var VIE = require('vie');
+
+    var html = jQuery('<p xmlns:dc="http://purl.org/dc/elements/1.1/" about="http://www.example.com/books/wikinomics">In his latest book <cite property="dc:title">Wikinomics</cite>, <span property="dc:creator">Don Tapscott</span> explains deep changes in technology, demographics and business.</p>');
+
+    VIE.RDFaEntities.getInstances(html);
+    var objectInstance = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+
+    console.log(objectInstance.get('dc:title'));
+
+## Development
+
+VIE development is coordinated using Git. [VIE@IKS](https://github.com/IKS/VIE) is the canonical "blessed repository", with actual development happening at [VIE@bergie](https://github.com/bergie/VIE).
+
+Feel free to [report issues](https://github.com/bergie/VIE/issues) or send [pull requests](http://help.github.com/pull-requests/) if you have ideas for pushing VIE forward!
+
+Development discussions happen on the `#iks` channel on Freenode. See also [VIE on Ohloh](http://www.ohloh.net/p/vie).
+
+### Running Unit Tests
+
+You need Node.js and [nodeunit](https://github.com/caolan/nodeunit) installed on your system. Then just run:
+
+    $ nodeunit test/*.js

@@ -1,20 +1,28 @@
 <!doctype html>
-<html>
+<html
+    version="HTML+RDFa 1.0"
+    xmlns:sioc="http://rdfs.org/sioc/ns#" 
+    xmlns:dcterms="http://purl.org/dc/terms/">
     <head>
         <title>VIE example</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <script>
             GENTICS_Aloha_base = 'http://aloha-editor.org/aloha-0.9.3/aloha/';
-
             jQuery(document).ready(function() {
 
                 // Implement our own Backbone.sync method
                 Backbone.sync = function(method, model, options) {
-                    console.log(method, model.toJSON());
+                    console.log(method, model.toJSONLD());
                 };
 
-                // Load collections from page so they can be managed
-                VIE.CollectionManager.loadCollections();
+                // Functionality for adding items
+                jQuery('#addbutton').bind('click', function() {
+                    var container = VIE.EntityManager.getBySubject('<http://example.net/blog/>').get('dcterms:hasPart').add([{}]);
+                    jQuery('[typeof="sioc:Post"][about=""]').vieSemanticAloha();
+                });
+
+                // Load all RDFa entities into VIE
+                VIE.RDFaEntities.getInstances();
 
                 // Make all RDFa entities editable
                 jQuery('[typeof][about]').each(function() {
@@ -23,28 +31,14 @@
 
                 jQuery('#savebutton').bind('click', function() {
                     // Go through all Backbone model instances loaded for the page
-                    jQuery.each(VIE.ContainerManager.instances, function(index, objectInstance) {
-                        var modifiedProperties = {};
-                        console.log(objectInstance);
-
-                        // Go through editables of the model instance
-                        jQuery.each(objectInstance.editables, function(propertyName, editableInstance) {
-                            if (!editableInstance.isModified()) {
-                                // This editable hasn't been modified, skip
-                                return true;
-                            }
-                            // Copy editable contents to the modifiedProperties object
-                            modifiedProperties[propertyName] = editableInstance.getContents();
-                        });
-
-                        if (jQuery.isEmptyObject(modifiedProperties))
-                        {
-                            // No modified editables for this object, skip
+                    VIE.EntityManager.entities.each(function(objectInstance) {
+                        if (!VIE.AlohaEditable.refreshFromEditables(objectInstance)) {
+                            // No changes to this object, skip
                             return true;
-                        }
+                        }               
 
                         // Set the modified properties to the model instance
-                        objectInstance.save(modifiedProperties, {
+                        objectInstance.save(null, {
                             success: function(savedModel, response) {
                                 alert(savedModel.id + " was saved, see JS console for details");
                                 jQuery.each(modifiedProperties, function(propertyName, propertyValue) {
@@ -58,12 +52,8 @@
                     });
                 });
 
-                jQuery('#addbutton').bind('click', function() {
-                    VIE.CollectionManager.collections[0].add([{}]);
-                });
-
                 jQuery('#tweakbutton').bind('click', function() {
-                    VIE.ContainerManager.instances[0].set({'dcterms:title': 'Hello, world!'});
+                    VIE.EntityManager.getByType('sioc:Post')[0].set({'dcterms:title': 'Hello, world!'});
                 });
             });
         </script>
@@ -72,15 +62,16 @@
         <script src="http://aloha-editor.org/aloha-0.9.3/aloha/plugins/com.gentics.aloha.plugins.HighlightEditables/plugin.js"></script>
         <script src="underscore-min.js"></script>
         <script src="backbone-min.js"></script>
+        <script src="vie.js"></script>
         <script src="vie-containermanager.js"></script>
         <script src="vie-collectionmanager.js"></script>
         <script src="vie-aloha.js"></script>
     </head>
     <body>
-        <p>Click on the content below to edit it, then <button id="savebutton">Save</button>, <button id="addbutton">Add item</button> or <button id="tweakbutton">Change via JS</button>.</p>
+        <p>Click on the content below to edit it, then <button id="savebutton">Save</button>, <button id="addbutton">Add items</button> or <button id="tweakbutton">Change via JS</button>.</p>
 
-        <div typeof="http://purl.org/dc/dcmitype/Collection">
-            <article typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item">
+        <div about="http://example.net/blog/" rel="dcterms:hasPart" rev="dcterms:partOf">
+            <article typeof="sioc:Post" about="http://example.net/blog/news_item">
                 <h1 property="dcterms:title">News item title</h1>
                 <div property="sioc:content">
                     <p>
