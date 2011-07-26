@@ -63,7 +63,6 @@
     // On node.js underscore.js can be installed via:
     //
     //     npm install underscore
-    var _ = this._;
     if (!_ && (typeof require !== 'undefined')) { _ = require('underscore')._; }
     if (!_) {
         throw 'VIE requires underscore.js to be available';
@@ -75,7 +74,6 @@
     // On node.js Backbone.js can be installed via:
     //
     //     npm install backbone
-    var Backbone = this.Backbone;
     if (!Backbone && (typeof require !== 'undefined')) { Backbone = require('backbone'); }
     if (!Backbone) {
         throw 'VIE requires Backbone.js to be available';
@@ -87,7 +85,6 @@
     // On node.js jQuery can be installed via:
     //
     //     npm install jquery
-    var jQuery = this.jQuery;
     if (!jQuery && (typeof require !== 'undefined')) { jQuery = require('jquery'); }
     if (!jQuery) {
         throw 'VIE requires jQuery to be available';
